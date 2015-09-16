@@ -2,27 +2,15 @@
 from z3 import *
 
 # declare
-s = []
-s.append(Int('s[0]'))
-s.append(Int('s[1]'))
-s.append(Int('s[2]'))
-s.append(Int('s[3]'))
-s.append(Int('s[4]'))
-s.append(Int('s[5]'))
-s.append(Int('s[6]'))
-s.append(Int('s[7]'))
-s.append(Int('s[8]'))
-s.append(Int('s[9]'))
-s.append(Int('s[10]'))
-s.append(Int('s[11]'))
-s.append(Int('s[12]'))
-s.append(Int('s[13]'))
-s.append(Int('s[14]'))
-s.append(Int('s[15]'))
-s.append(Int('s[16]'))
-s.append(Int('s[17]'))
-s.append(Int('s[18]'))
-s.append(Int('s[19]'))
+s = [Int('s[%i]' %i) for i in range(0,20)]
+'''
+# For 2 int declare
+a, b = Int("a b")
+# For 20 byte-array
+b = [BitVec('b[%i]' %i, 8) for i in range(0,20)]
+# For 32 bit var
+x = BitVec('x', 32)
+'''
 
 solver = Solver()
 
@@ -59,4 +47,13 @@ solver.add(s[14] - s[13] == -4)
 solver.add(s[18] + s[19] == 3)
 
 print solver.check()
-print solver.model()
+
+ans = ''
+for i in range(0, 20):
+    ans += str(solver.model()[s[i]])
+print ans
+
+# find other answer
+while solver.check() == sat:
+    print solver.model()
+    solver.add(Or(s[0] != solver.model()[s[0]], s[1] != solver.model()[s[1]]))
